@@ -91,11 +91,8 @@ std-data
 std> db.dropDatabase()
 { ok: 1, dropped: 'std' }
 ```
-<<<<<<< HEAD:MongoDB Tutorial.md
 
 ### 6. Crud operations
 
 - Inserting 
 
-=======
->>>>>>> ece0c23e7c6b6e868f73112397bd7bc7397ac3f0:readme.md
