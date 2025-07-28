@@ -223,4 +223,33 @@ to aslo insert documents after error we need to write :  { ordered: false }
 ex : db.<collection-name>.insertMany([ doc1, doc2, ... ], { ordered: false });
 
 
---- 
+---
+
+# Case senstivity in mongodb.
+
+```
+Collections names are case sensitive.
+feilds name within documents are also case sensitive.
+
+db.Product.insertOne({name:'thapa', age:30}); // here both the products will be diffrent.z
+db.product.insertOne({name:'thapa', age:30});
+
+```
+
+# Read operations on mongoDB
+
+1. Reading Document in MongoDB
+2. Comparision Operators.
+3. Logical operators.
+4. Cursors in MongoDB.
+5. Elements Operators.
+
+
+
+# Finding Documents in MongoDB
+
+find() -> db.collection_name.find({key:value})
+
+findOne() -> db.collection_name.find({key:value})
+
+## Importing Mongo In json
