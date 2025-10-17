@@ -2,6 +2,10 @@
 
 MongoDB is a NoSQL database that stores data in JSON-like documents. It is highly scalable and flexible, making it a popular choice for modern applications.
 
+
+MogoDB created by 10gen it was released in 2009.
+
+
 ## Installation
 
 ### 1. Install MongoDB
@@ -30,13 +34,18 @@ Once installed, start the MongoDB server:
 
    1. cmd -> run mongod.
    2. cmd -> mongod --dbpath="E:\mongoDb\data"
+   
       (for running server).
    3. cmd -> mongosh to run the mongodb shell
 
 3. Show dbs -> to show the databases.
 
-(\*Always run the mongod --dbpath="E:\mongoDb\data" before using mongodb show dbs. )
+(\*Always run the
+ mongod --dbpath="E:\mongoDb\data"
+  before using mongodb show dbs. )
 
+
+or i can also use mogodb server which will automatically run server.    
 ---
 
 ### 1. Connect to MongoDB
@@ -65,17 +74,28 @@ Once installed, start the MongoDB server:
 ### 3. Creating databse
 
 ```
-std> db.createCollection('std-data')
+std> use stdData; // it create a databse of stdData name.
 { ok: 1 }
-std> show sbs
+std> show dbs // here because my databse dont have any error it will not show anything here.
+
 
 std> show dbs
 admin    40.00 KiB
 config  108.00 KiB
 local    72.00 KiB
-std       8.00 KiB
-std>
+std> 
 
+std> db.createCollection('data') // this will create a data collection inside stdData. 
+std> show dbs // now my dbs will start to shoe on hte list;
+
+std> show dbs
+admin    40.00 KiB
+config  108.00 KiB
+local    72.00 KiB
+stdData  8.00 KiB
+std> 
+
+agar ham collection bna bhi dete han to vo tb tk show nhi krega jb tk use koi data nhi hoga,
 ```
 
 ---
@@ -95,8 +115,16 @@ std-data
 db.createCollection('collection_name');
 ```
 
-### 5. Drop Database.
+### 5. Drop Database and collection
+- collection deletion
 
+to drop a collection inside a data base
+db.collection_name.drop();
+practice-mongo> db.data.drop(); it return boolean values for operations. 
+true
+
+- database 
+to drop databse.
 ```
 std> db.dropDatabase()
 { ok: 1, dropped: 'std' }
@@ -104,13 +132,13 @@ std> db.dropDatabase()
 
 ### 6. Crud operations
 
-- Inserting
+- Inserting/c
 
-- Update
+- Update/u
 
-- delete
+- delete/d
 
-- read
+- read/r
 
 ### Inserting document in mongoDB
 
@@ -123,7 +151,7 @@ for inserting 1 object
     field2:value2,
 })
 
-for inserting multiple objects in the documents.
+for inserting multiple objects in the documents and use array of objects for it.
 
 db.<collection-name>.insertMany([
     {
@@ -136,6 +164,8 @@ db.<collection-name>.insertMany([
 
     }
 ])
+
+-- insertMany includes( array of objects).
 
 ex : 
     my-collections> db.data.insertOne({name:"rishi"}) // here if we dont have any collection we can directly create a new one on the same insert command where we want to store the data.
@@ -183,7 +213,7 @@ ex :
 2. Reserved Words
 
     If a field name is a reserved keyword in MongoDB, use quotes to
-    distinguish it from the reserved keyword
+    distinguish it from the reserved keyword.
 
 ```
 
@@ -198,6 +228,9 @@ behavior.
 
             Default behavior is ordered, where MongoDB stops on the first error.
             db.<collection-name>.insertMany([ doc1, doc2, ... ]);
+
+
+
    2. Unordered Inserts
 
             When executing bulk write operations with unordered flag, MongoDB continues processing
@@ -208,20 +241,80 @@ behavior.
 
 ### $Ordered Insert
 
-Documents Before the wrong one will be
-inserted & after the one with error will not. 
+Documents Before the wrong one will be inserted & after the one with error will not.
+(mtlb agr mai koi data insert krta hun jisme collection of document hai pr kisi ek collection me koi error hai to is case me ye hoga ki jo mere wrong data se pehle ki information hogi vo successfully insert ho jaaegi pr error or uske baad wali file insert nhi hogi. )
 
 ### $Ordered = false
 
-Documents before the one with an error will be
-inserted, and the documents after the one with an error
-will also be inserted. Only the document with the error
-will not be inserted.
+Documents before the one with an error will be inserted, and the documents after the one with an error
+will also be inserted. Only the document with the error will not be inserted.
+error wali insertion ke alava baki sare document insert ho jaenge.
 
 to aslo insert documents after error we need to write :  { ordered: false }
 
 ex : db.<collection-name>.insertMany([ doc1, doc2, ... ], { ordered: false });
 
+- Example
+    ```
+            my-collections> db.data.insertMany([{name:"luffy", sirname:"monkey D"} ,{ _id: ObjectId('68f2511a00822de274eec4aa')}, name: 'vinod', age: 21 , {"name":"vinod", age:45, }, {name:"krishTrish",age:12 }])
+        Uncaught:
+        SyntaxError: Unexpected token, expected "," (1:106)
+
+        > 1 | db.data.insertMany([{name:"luffy", sirname:"monkey D"} ,{ _id: ObjectId('68f2511a00822de274eec4aa')}, name: 'vinod', age: 21 , {"name":"vinod", age:45, }, {name:"krishTrish",age:12 }])
+            |                                                                                                           ^
+        2 |
+
+        my-collections> db.data.insertMany([{name:"luffy", sirname:"monkey D"} ,{ _id: ObjectId('68f2511a00822de274eec4aa')}, {name: 'vinod', age: 21 }, {name:"shanks",age:31 }]);
+        Uncaught:
+        MongoBulkWriteError: E11000 duplicate key error collection: my-collections.data index: _id_ dup key: { _id: ObjectId('68f2511a00822de274eec4aa') }
+        Result: BulkWriteResult {
+        insertedCount: 1,
+        matchedCount: 0,
+        modifiedCount: 0,
+        deletedCount: 0,
+        upsertedCount: 0,
+        upsertedIds: {},
+        insertedIds: { '0': ObjectId('68f2538b00822de274eec4ac') }
+        }
+        Write Errors: [
+        WriteError {
+            err: {
+            index: 1,
+            code: 11000,
+            errmsg: "E11000 duplicate key error collection: my-collections.data index: _id_ dup key: { _id: ObjectId('68f2511a00822de274eec4aa') }",
+            errInfo: undefined,
+            op: { _id: ObjectId('68f2511a00822de274eec4aa') }
+            }
+        }
+        ]
+        my-collections> db.data.insertMany([{name:"luffy", sirname:"monkey D"} ,{ _id: ObjectId('68f2511a00822de274eec4aa')}, {name: 'vinod', age: 21 }, {name:"shanks",age:31 }],{ordered:false});
+        Uncaught:
+        MongoBulkWriteError: E11000 duplicate key error collection: my-collections.data index: _id_ dup key: { _id: ObjectId('68f2511a00822de274eec4aa') }
+        Result: BulkWriteResult {
+        insertedCount: 3,
+        matchedCount: 0,
+        modifiedCount: 0,
+        deletedCount: 0,
+        upsertedCount: 0,
+        upsertedIds: {},
+        insertedIds: {
+            '0': ObjectId('68f253b000822de274eec4af'),
+            '2': ObjectId('68f253b000822de274eec4b0'),
+            '3': ObjectId('68f253b000822de274eec4b1')
+        }
+        }
+        Write Errors: [
+        WriteError {
+            err: {
+            index: 1,
+            code: 11000,
+            errmsg: "E11000 duplicate key error collection: my-collections.data index: _id_ dup key: { _id: ObjectId('68f2511a00822de274eec4aa') }",
+            errInfo: undefined,
+            op: { _id: ObjectId('68f2511a00822de274eec4aa') }
+            }
+        }
+        ]
+    ```
 
 ---
 
@@ -231,7 +324,7 @@ ex : db.<collection-name>.insertMany([ doc1, doc2, ... ], { ordered: false });
 Collections names are case sensitive.
 feilds name within documents are also case sensitive.
 
-db.Product.insertOne({name:'thapa', age:30}); // here both the products will be diffrent.z
+db.Product.insertOne({name:'thapa', age:30}); // here both the products will be diffrent. not the same.
 db.product.insertOne({name:'thapa', age:30});
 
 ```
@@ -250,7 +343,20 @@ db.product.insertOne({name:'thapa', age:30});
 
 find() -> db.collection_name.find({key:value})
 
+ex: 
+
+my-collections> db.data.find({name:'vinod'});
+[
+  { _id: ObjectId('68f250b100822de274eec4a9'), name: 'vinod', age: 45 },
+  { _id: ObjectId('68f2511a00822de274eec4aa'), name: 'vinod', age: 45 },
+  { _id: ObjectId('68f253b000822de274eec4b0'), name: 'vinod', age: 21 }
+]
+
 findOne() -> db.collection_name.find({key:value})
 
+ex: 
+
+my-collections> db.data.findOne({name:'vinod'});
+{ _id: ObjectId('68f250b100822de274eec4a9'), name: 'vinod', age: 45 }
+
 ## Importing Mongo In json
-ji
