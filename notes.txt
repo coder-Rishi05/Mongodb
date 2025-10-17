@@ -1,0 +1,96 @@
+
+### Body Parser
+
+npm i body-parser
+
+- it is a middleware library for express.js
+- it is used to parse and extract the body of incomming HTTP requests.
+- When a client sends data to a server it includes data in the body of an http request.
+- This data can be in various format such as json form data or URL encoded data. 
+- Body parser helps parse the data and extract the data from the request so that you can work with it in your Express.js application
+- body parser process the request body before it reaches to the route handlers making the parsed data available in the 
+
+<b>req.body</b> for furthur processing.
+
+- body parser automatically parse the json data from the request bosy and convert it into js object. which is then stores in the req.body
+- Express uses a lot of middleware and to use middleware we use the app.use()
+
+const bodyParser = require('body-parser')
+app.use(bodyParser.json())
+
+### send data from client to server
+
+we need an endpoint where the client sends data and data needs to be saved in the databse.
+
+to this we need method called POST
+now code the post method to add the person
+mongoose only save predefined schema.
+
+
+```
+
+it is depriciated now 
+
+app.post("/person", (req, res) => {
+  // getting data here
+
+  const data = req.body; // assuming request body contains the person data.
+
+  // create a new person document using the mongoose model.
+
+//   const newPerson = new Person();
+//    // this new person will now contain all the fields of person imported from person model.
+//   newPerson.name = data.name;
+//   newPerson.age = data.age;
+//   newPerson.mobile = data.name;
+//   newPerson.work = data.name;
+//   newPerson.email = data.name;
+//   newPerson.address = data.name;
+//   newPerson.salary = data.name;
+// });
+  const newPerson = new Person(data); // this data contain all the fieldsby default
+
+  newPerson.save((err,person)=>{
+    if(err){
+      console.log("error on saving the data : ", err);
+      res.status(500).json(err," : Internal server error. "); // internal error code : 500
+      
+    } 
+    else{
+      console.log("data saved successfully");
+      res.status(200).json(person)
+    }
+  })
+
+<!--  }) -->
+
+```
+
+### async and await with try and catch block
+
+the async and await feature is useful for asyncronus code.
+the try catch block also easily handle the async calls.
+
+
+
+app.post("/person", async (req, res) => {
+  try {
+    const data = req.body;
+    //  Create a new Person document using the mongoose model
+    const newPerson = new Person(data);
+    // Save the new person to the databse.
+    const response = await newPerson.save();
+    res.status(200).json(response);
+    console.log("data saved");
+  } catch (error) {
+    console.log("failed to get data", error);
+    res.status(500).json({ error: "Internal Server Error " });
+  }
+});
+
+- the try block contains the code for creating a new Person document and saving it to the databse using 
+
+await newPerson.save().
+
+- If an error during any step. it is caught in the catch block and an error response is send with a 500 status code.
+
