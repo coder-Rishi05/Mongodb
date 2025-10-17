@@ -360,3 +360,5 @@ my-collections> db.data.findOne({name:'vinod'});
 { _id: ObjectId('68f250b100822de274eec4a9'), name: 'vinod', age: 45 }
 
 ## Importing Mongo In json
+
+
