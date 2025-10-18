@@ -38,6 +38,8 @@ Once installed, start the MongoDB server:
       (for running server).
    3. cmd -> mongosh to run the mongodb shell
 
+in this setup you need to keep on cmd open in running to use the server of mongodb.
+
 3. Show dbs -> to show the databases.
 
 (\*Always run the
